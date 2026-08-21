@@ -1,3 +1,5 @@
 .DS_Store
 .vercel
 .env*
+design/_*.html
+design/_*.txt

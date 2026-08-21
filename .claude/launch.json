@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "purple-piano-site", "runtimeExecutable": "node", "runtimeArgs": ["design/serve.js"], "port": 4321 }
+  ]
+}
