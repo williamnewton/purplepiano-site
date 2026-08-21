@@ -115,8 +115,6 @@ body {
 .nav a:hover, .nav a[aria-current="page"] { background: rgba(167,139,250,.16); color: var(--ink); }
 
 /* ---------- Hero ---------- */
-.hero { padding: clamp(2.5rem, 7vw, 5rem) 0 clamp(2rem, 5vw, 3.5rem); text-align: center; }
-
 h1 {
   font-family: var(--display);
   font-weight: 800;
@@ -172,7 +170,7 @@ h1 {
 }
 
 /* ---------- Hero ---------- */
-.hero { padding: clamp(3rem, 9vw, 6.5rem) 0 clamp(2rem, 5vw, 3rem); text-align: center; }
+.hero { padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(1.25rem, 3vw, 2rem); text-align: center; }
 
 /* Cursor-reactive hero. --mx/--my are set by a small script and default to
    0 on :root, so everything sits correctly with JS off. */
@@ -220,7 +218,7 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
    height and 60% width centred on the seams, 13-dot knob rings. */
 .stage {
   position: relative; z-index: 1;
-  padding: clamp(1rem, 3vw, 2rem) 0 clamp(3rem, 8vw, 5rem);
+  padding: clamp(.25rem, 1.5vw, 1rem) 0 clamp(3rem, 8vw, 5rem);
   perspective: 1800px;
   overflow: hidden;
 }
@@ -563,7 +561,7 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 
 @media (max-width: 700px) {
   .site-header { display: none; }
-  .hero { padding-top: clamp(3rem, 12vh, 6rem); }
+  .hero { padding-top: clamp(1.5rem, 5vh, 3rem); }
 
   .tag-break { display: inline; }
   .tagline {
