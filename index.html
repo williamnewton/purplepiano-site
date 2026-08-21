@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@800&display=swap">
-  <link rel="stylesheet" href="/style.css?v=e2715212">
+  <link rel="stylesheet" href="/style.css?v=31042bf1">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -122,7 +122,7 @@
       <div class="ipad" role="img" aria-label="Purple Piano running on an iPad: the song maker grid with a drawn tune above a full rainbow keyboard.">
       <div class="ipad-screen">
         <div class="app-bar">
-          <span class="app-brand">Purple Piano</span>
+          <span class="app-brand wordmark"><span class="wm-purple">purple</span><span class="wm-piano">piano</span></span>
           <span class="app-preset">
             <i class="nav">&#8249;</i>
             <span class="preset-mid">
@@ -399,6 +399,181 @@
         var v = document.querySelector('.launch-veil');
         if (v) v.remove();
       });
+    })();
+  </script>
+
+  <script>
+    // Sequencer animation: the mockup "plays" the tune drawn in the song
+    // maker. A stepped playhead sweeps the grid, lit cells flash, and the
+    // matching rainbow keys press down in time. Motion-safe and purely
+    // decorative — with this script absent the panel is the same still
+    // mockup as before.
+    //
+    // TEMPORARY tuning jig: every dial reads from the URL (?bpm=96&hold=.85
+    // ...), and ?jig shows sliders that rewrite the URL live. Dial it in,
+    // copy the URL, and the numbers get baked in here as the defaults.
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (reduce.matches) return;
+
+      var screen = document.querySelector('.ipad-screen');
+      var rows = document.querySelectorAll('.cells .rollrow');
+      var keys = document.querySelectorAll('.app-keys .wk');
+      var play = document.querySelector('.play');
+      if (!screen || rows.length !== 8 || keys.length !== 14 || !play) return;
+
+      // Lanes top→bottom are E D C A G E D C; map each to its white key
+      // (two C-major octaves, low C at index 0).
+      var LANE_KEY = [9, 8, 7, 5, 4, 2, 1, 0];
+      var STEPS = 16;
+
+      var q = new URLSearchParams(location.search);
+      function num(name, fallback) {
+        var v = parseFloat(q.get(name));
+        return isFinite(v) ? v : fallback;
+      }
+
+      // The dials. URL params override; ?jig shows sliders for them.
+      var cfg = {
+        bpm:   num('bpm',   96),   // tempo — two grid steps per beat
+        hold:  num('hold',  0.85), // note length, as a fraction of one step
+        dip:   num('dip',   0.7),  // key press depth (cqw)
+        glow:  num('glow',  1),    // pressed-key / hit-cell glow strength
+        flash: num('flash', 1.45), // hit-cell flash brightness
+        gap:   num('gap',   2)     // silent steps between loops
+      };
+
+      function stepMs() { return 60000 / cfg.bpm / 2; }
+      function applyVars() {
+        screen.style.setProperty('--seq-dip', cfg.dip);
+        screen.style.setProperty('--seq-glow', cfg.glow);
+        screen.style.setProperty('--seq-flash', cfg.flash);
+      }
+      applyVars();
+
+      // Column model: every cell in the column (for the playhead) plus the
+      // lit cells paired with the key each one triggers.
+      var cols = [];
+      for (var c = 0; c < STEPS; c++) {
+        var col = { cells: [], notes: [] };
+        for (var r = 0; r < rows.length; r++) {
+          var cell = rows[r].children[c];
+          if (!cell) continue;
+          col.cells.push(cell);
+          if (cell.classList.contains('on')) {
+            col.notes.push({ cell: cell, key: keys[LANE_KEY[r]] });
+          }
+        }
+        cols.push(col);
+      }
+
+      var step = -1;
+      var nextAt = performance.now() + 800;
+      var phCells = [];   // cells carrying the playhead highlight
+      var lit = [];       // {el, cls} waiting to be un-lit at el._seqUntil
+
+      function arm(el, cls, until) {
+        el.classList.add(cls);
+        el._seqUntil = until;
+        lit.push({ el: el, cls: cls });
+      }
+
+      function trigger(now) {
+        step = (step + 1) % (STEPS + Math.max(0, Math.round(cfg.gap)));
+        for (var i = 0; i < phCells.length; i++) phCells[i].classList.remove('ph');
+        phCells = [];
+        if (step >= STEPS) return; // the breath between loops
+
+        var col = cols[step];
+        var until = now + stepMs() * cfg.hold;
+        for (var i = 0; i < col.cells.length; i++) {
+          col.cells[i].classList.add('ph');
+          phCells.push(col.cells[i]);
+        }
+        for (var i = 0; i < col.notes.length; i++) {
+          arm(col.notes[i].cell, 'hit', until);
+          arm(col.notes[i].key, 'pressed', until);
+        }
+      }
+
+      function release(now) {
+        for (var i = lit.length - 1; i >= 0; i--) {
+          if (now < lit[i].el._seqUntil) continue;
+          lit[i].el.classList.remove(lit[i].cls);
+          lit.splice(i, 1);
+        }
+      }
+
+      function frame(now) {
+        // Hold still while the launch flight owns the panel.
+        if (!document.documentElement.classList.contains('is-launching')) {
+          if (now >= nextAt) {
+            // rAF sleeps in background tabs; on return, resume in tempo
+            // instead of machine-gunning every missed step.
+            if (now - nextAt > 1000) nextAt = now;
+            trigger(now);
+            nextAt += stepMs();
+          }
+          release(now);
+        }
+        requestAnimationFrame(frame);
+      }
+      play.classList.add('playing');
+      requestAnimationFrame(frame);
+
+      // --- TEMPORARY tuning jig (?jig) — remove once values are baked ---
+      if (!q.has('jig')) return;
+
+      var DIALS = [
+        ['bpm',   40, 200, 1],
+        ['hold', 0.1, 1.5, 0.05],
+        ['dip',    0,   2, 0.05],
+        ['glow',   0,   3, 0.1],
+        ['flash',  1, 2.2, 0.05],
+        ['gap',    0,   8, 1]
+      ];
+
+      var jig = document.createElement('div');
+      jig.className = 'seq-jig';
+      var title = document.createElement('b');
+      title.textContent = 'Sequencer jig';
+      jig.appendChild(title);
+
+      var urlOut = document.createElement('code');
+      function syncUrl() {
+        DIALS.forEach(function (d) { q.set(d[0], String(cfg[d[0]])); });
+        var qs = '?' + q.toString();
+        history.replaceState(null, '', qs);
+        urlOut.textContent = qs;
+      }
+
+      DIALS.forEach(function (d) {
+        var name = d[0];
+        var row = document.createElement('label');
+        var lab = document.createElement('span');
+        lab.textContent = name;
+        var input = document.createElement('input');
+        input.type = 'range';
+        input.min = d[1]; input.max = d[2]; input.step = d[3];
+        input.value = cfg[name];
+        var val = document.createElement('span');
+        val.textContent = String(cfg[name]);
+        input.addEventListener('input', function () {
+          cfg[name] = parseFloat(input.value);
+          val.textContent = input.value;
+          applyVars();
+          syncUrl();
+        });
+        row.appendChild(lab); row.appendChild(input); row.appendChild(val);
+        jig.appendChild(row);
+      });
+
+      jig.appendChild(urlOut);
+      var hint = document.createElement('small');
+      hint.textContent = 'Click the params to select, then send them back to bake in.';
+      jig.appendChild(hint);
+      syncUrl();
+      document.body.appendChild(jig);
     })();
   </script>
 </body>

@@ -227,7 +227,8 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   margin-inline: auto;
   aspect-ratio: 16 / 11;
   border-radius: clamp(14px, 2vw, 26px);
-  padding: clamp(4px, .62vw, 9px);
+  /* A thin 2px rim — the metal gradient reads as an edge, not a bezel. */
+  padding: 2px;
   background: linear-gradient(150deg, #b9bac9 0%, #74758c 30%, #43445a 62%, #9c9db1 100%);
   box-shadow: 0 50px 90px -30px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.14);
   transform: rotateX(7deg) rotateY(-13deg) rotateZ(2deg);
@@ -239,7 +240,9 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 /* The app's own chrome: --background mixed 86% with the royal-purple tint. */
 .ipad-screen {
   height: 100%;
-  border-radius: clamp(9px, 1.4vw, 17px);
+  /* Tracks the shell's radius minus the 2px rim, so the corners stay
+     concentric. */
+  border-radius: clamp(12px, calc(2vw - 2px), 24px);
   background:
     radial-gradient(120% 90% at 50% -10%, oklch(0.42 0.16 300) 0%, transparent 62%),
     radial-gradient(85% 65% at 10% 106%, oklch(0.55 0.18 330 / .58) 0%, transparent 70%),
@@ -256,11 +259,9 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 
 /* Header */
 .app-bar { display: flex; align-items: center; gap: 1.2cqw; flex: none; }
-.app-brand {
-  font-family: var(--display); font-weight: 800;
-  font-size: 1.05cqw; letter-spacing: .18em; text-transform: uppercase;
-  color: oklch(0.75 0.04 300); white-space: nowrap;
-}
+/* The real wordmark lockup, scaled to the app bar (.wordmark carries the
+   Poppins face and the rainbow "piano" gradient). */
+.app-brand { font-size: 1.7cqw; white-space: nowrap; }
 .app-preset {
   display: flex; align-items: center; gap: 1cqw;
   margin-inline: auto;
@@ -414,6 +415,68 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   background: linear-gradient(180deg, var(--bk-top) 0%, var(--bk-bot) 100%);
   box-shadow: inset 0 -5px 0 var(--bk-lip), 0 4px 8px oklch(0.15 0.03 275 / .6);
 }
+
+/* ---------- Sequencer animation ----------
+   Class hooks driven by the inline sequencer script: .ph marks the
+   playhead column, .hit flashes a lit cell, .pressed presses its key.
+   The --seq-* dials are set by the script (URL-tunable via the jig).
+   Decorative only — with JS off none of these classes ever appear. */
+.cell { transition: background-color .15s ease, border-color .15s ease; }
+.cell.ph:not(.on) { background: oklch(0.98 0 0 / .2); border-color: oklch(0.98 0 0 / .32); }
+.cell.on { transition: transform .12s ease, filter .12s ease, box-shadow .12s ease; }
+.cell.on.hit {
+  transform: scale(1.12);
+  filter: brightness(var(--seq-flash, 1.45)) saturate(1.15);
+  box-shadow: 0 0 calc(1.6cqw * var(--seq-glow, 1)) var(--halo), 0 0 .5cqw var(--halo);
+}
+.wk { transition: transform .12s cubic-bezier(.2,.7,.3,1), box-shadow .12s ease, filter .12s ease; }
+.wk.pressed {
+  transform: translateY(calc(var(--seq-dip, .7) * 1cqw));
+  filter: saturate(1.35) brightness(1.05);
+  box-shadow: inset 0 -3px 0 var(--lip), 0 0 calc(2.4cqw * var(--seq-glow, 1)) var(--lip);
+}
+.play { transition: box-shadow .3s ease, background-color .3s ease; }
+.play.playing {
+  background: oklch(0.85 0.12 300);
+  box-shadow: 0 0 2cqw oklch(0.78 0.1 300 / .55);
+}
+
+/* ---------- Tuning jig (TEMPORARY) ----------
+   Only rendered when the page is loaded with ?jig — sliders for dialling
+   the sequencer animation, mirrored into the URL. Remove this block once
+   the chosen numbers are baked in as defaults. */
+.seq-jig {
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 80;
+  width: min(320px, calc(100vw - 2rem));
+  background: rgba(20, 10, 36, .92);
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--r-md);
+  padding: 1rem 1.1rem;
+  font-size: .85rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 20px 50px -20px rgba(0,0,0,.8);
+}
+.seq-jig b {
+  display: block; margin-bottom: .5rem;
+  font-family: var(--display); font-size: .8rem;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent-hot);
+}
+.seq-jig label {
+  display: grid; grid-template-columns: 3.2rem 1fr 2.8rem;
+  align-items: center; gap: .6rem; margin: .35rem 0;
+  color: var(--ink-soft);
+}
+.seq-jig label span:last-child { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+.seq-jig input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
+.seq-jig code {
+  display: block; margin-top: .6rem; padding: .45rem .6rem;
+  border-radius: .5rem; background: rgba(255,255,255,.07);
+  color: var(--ink-soft); font-size: .72rem;
+  word-break: break-all; user-select: all;
+}
+.seq-jig small { display: block; margin-top: .35rem; color: var(--ink-dim); font-size: .7rem; }
 
 @media (max-width: 700px) {
   .ipad { transform: rotateX(4deg) rotateY(-7deg); width: min(96%, 560px); }
