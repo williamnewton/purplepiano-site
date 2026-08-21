@@ -23,3 +23,16 @@ node apply-logo.mjs # apply logo + favicon to all pages
 `gen.mjs` builds `Main.dc.html`, the artboard for the Claude Design canvas.
 
 `serve.js` is a local static server for previewing (`.claude/launch.json`).
+
+## Cache busting
+
+`style.css` is linked as `/style.css?v=<hash>` where the hash is the first
+8 hex chars of its sha256. Re-run after ANY stylesheet change:
+
+```
+node apply-cachebust.mjs
+```
+
+Without it a visitor's cached stylesheet can be paired with newer HTML —
+which is exactly how the hero logo went missing on prod once: the old CSS
+still carried a mobile-only `display: none` for `.hero-mark`.
