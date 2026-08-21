@@ -95,7 +95,7 @@ body {
   position: relative; z-index: 2;
   padding: 1.5rem 0;
 }
-.site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.site-header .wrap { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
 
 .brand {
   display: inline-flex; align-items: center; gap: .6rem;
@@ -174,26 +174,8 @@ h1 {
 /* ---------- Hero ---------- */
 .hero { padding: clamp(3rem, 9vw, 6.5rem) 0 clamp(2rem, 5vw, 3rem); text-align: center; }
 
-/* Cursor-reactive title. --mx/--my are set by a tiny script, and default
-   to 0 so the type sits correctly with JS off. */
-h1.magnetic {
-  position: relative;
-  transform: translate3d(calc(var(--mx) * 12px), calc(var(--my) * 8px), 0);
-  transition: transform .25s cubic-bezier(.22,.61,.36,1);
-}
-/* will-change is set only while a pointer is actually driving the effect —
-   left on permanently it holds a compositor layer for the whole session. */
-.hero:hover h1.magnetic { will-change: transform; }
-h1.magnetic::after {
-  content: attr(data-text);
-  position: absolute; inset: 0;
-  background: linear-gradient(100deg, #fff0f7, #fffbe8 40%, #e8fff8 70%, #f0f0ff);
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-  opacity: calc(.16 + var(--glow) * .34);
-  transform: translate3d(calc(var(--mx) * -22px), calc(var(--my) * -14px), 0);
-  transition: transform .35s cubic-bezier(.22,.61,.36,1), opacity .35s ease;
-  pointer-events: none;
-}
+/* Cursor-reactive hero. --mx/--my are set by a small script and default to
+   0 on :root, so everything sits correctly with JS off. */
 .tagline {
   transform: translate3d(calc(var(--mx) * 5px), calc(var(--my) * 3px), 0);
   transition: transform .4s cubic-bezier(.22,.61,.36,1);
@@ -446,7 +428,7 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   .cta-row .btn { justify-content: center; }
 }
 @media (prefers-reduced-motion: reduce) {
-  h1.magnetic, h1.magnetic::after, .tagline, .ipad { transition: none !important; transform: none !important; }
+  .hero-mark, .tagline, .ipad { transition: none !important; transform: none !important; }
   .stage:hover .ipad { transform: rotateX(7deg) rotateY(-13deg) rotateZ(2deg); }
 }
 
@@ -536,22 +518,28 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 /* ---------- Mobile hero ----------
    Small screens lead with the app mark instead of the type wordmark, and
    drop the header nav (Support/Privacy still live in the footer). */
-.hero-mark { display: none; }
+
 .tag-break { display: none; }
+
+/* The logo IS the hero title: an <h1> wraps it so the page keeps a real
+   top-level heading (the svg's aria-label supplies the text), and the mark
+   carries the cursor-reactive motion the type used to have. */
+.hero-title { margin: 0; font-size: 0; line-height: 0; }
+.hero-mark {
+  display: block;
+  width: clamp(112px, 17vw, 216px);
+  height: auto;
+  margin: 0 auto clamp(1.25rem, 3vw, 2rem);
+  filter: drop-shadow(0 24px 55px rgba(0,0,0,.55));
+  transform: translate3d(calc(var(--mx) * 12px), calc(var(--my) * 8px), 0);
+  transition: transform .25s cubic-bezier(.22,.61,.36,1);
+}
+.hero:hover .hero-mark { will-change: transform; }
 
 @media (max-width: 700px) {
   .site-header { display: none; }
-
-  .hero-mark {
-    display: block;
-    width: clamp(96px, 30vw, 148px);
-    height: auto;
-    margin: 0 auto 1.5rem;
-    filter: drop-shadow(0 20px 45px rgba(0,0,0,.5));
-  }
-  .hero h1.magnetic { display: none; }
-
   .hero { padding-top: clamp(3rem, 12vh, 6rem); }
+  .hero-mark { width: clamp(96px, 30vw, 148px); }
   .tag-break { display: inline; }
   .tagline {
     max-width: none;
