@@ -211,6 +211,7 @@ h1.magnetic::after {
 }
 .btn-primary.is-pending { cursor: default; }
 
+.btn-ghost .btn-main { font-size: 1.15rem; }
 .btn-ghost {
   background: rgba(255,255,255,.08);
   border-color: rgba(255,255,255,.22);
@@ -437,6 +438,100 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 @media (prefers-reduced-motion: reduce) {
   h1.magnetic, h1.magnetic::after, .tagline, .ipad { transition: none !important; transform: none !important; }
   .stage:hover .ipad { transform: rotateX(7deg) rotateY(-13deg) rotateZ(2deg); }
+}
+
+/* ---------- Launch: hover lift + zoom to fullscreen ----------
+   The iPad rises toward the reader while the play button is hovered, then
+   flies up to fill the viewport on click while the target page preloads. */
+
+/* Hover lift. .is-lifted is set by script on pointer enter/leave so the
+   effect reads from the BUTTON, not from hovering the iPad itself. */
+.stage .ipad.is-lifted {
+  transform: rotateX(2deg) rotateY(-4deg) rotateZ(0deg) scale(1.045);
+  box-shadow: 0 70px 120px -40px rgba(0,0,0,.8),
+              0 0 0 1px rgba(255,255,255,.18),
+              0 0 90px -30px var(--accent);
+}
+
+/* While launching, the iPad is promoted to a fixed layer and scaled to fill
+   the viewport. --fly-* are measured and set by script so the element starts
+   exactly where it already sits — no jump at the hand-off. */
+/* .stage sets `perspective`, which makes it a containing block for fixed
+   descendants — so a flying iPad would anchor to the stage, not the
+   viewport. Drop the perspective while a launch is in flight. */
+.stage.is-releasing { perspective: none; overflow: visible; }
+
+.ipad.is-flying {
+  position: fixed;
+  left: var(--fly-x); top: var(--fly-y);
+  width: var(--fly-w); height: var(--fly-h);
+  margin: 0;
+  z-index: 60;
+  transform: none;
+  transition: none;
+  will-change: transform, opacity;
+}
+.ipad.is-flying.go {
+  transform: translate3d(var(--fly-dx), var(--fly-dy), 0) scale(var(--fly-scale));
+  transition: transform .72s cubic-bezier(.7,0,.2,1),
+              border-radius .72s cubic-bezier(.7,0,.2,1);
+  border-radius: 0;
+}
+
+/* Curtain fades the page out behind the flying iPad. */
+.launch-veil {
+  position: fixed; inset: 0; z-index: 55;
+  background: oklch(0.19 0.05 300);
+  opacity: 0;
+  pointer-events: none;
+  /* Eases in behind the panel and deliberately trails it, so the iPad is
+     never hidden behind the curtain it is flying in front of. */
+  transition: opacity .55s ease .12s;
+}
+.launch-veil.on { opacity: 1; }
+
+/* Anything that isn't the iPad recedes during the flight. */
+.is-launching .site-header,
+.is-launching .hero,
+.is-launching .site-footer,
+.is-launching .cosmos,
+.is-launching .stars {
+  opacity: 0;
+  transition: opacity .45s ease;
+  pointer-events: none;
+}
+.is-launching { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stage .ipad.is-lifted { transform: none; }
+  .ipad.is-flying.go { transition: none; }
+  .launch-veil { transition: none; }
+}
+
+/* ---------- Mobile hero ----------
+   Small screens lead with the app mark instead of the type wordmark, and
+   drop the header nav (Support/Privacy still live in the footer). */
+.hero-mark { display: none; }
+.tag-break { display: none; }
+
+@media (max-width: 700px) {
+  .site-header { display: none; }
+
+  .hero-mark {
+    display: block;
+    width: clamp(96px, 30vw, 148px);
+    height: auto;
+    margin: 0 auto 1.5rem;
+    filter: drop-shadow(0 20px 45px rgba(0,0,0,.5));
+  }
+  .hero h1.magnetic { display: none; }
+
+  .hero { padding-top: clamp(3rem, 12vh, 6rem); }
+  .tag-break { display: inline; }
+  .tagline {
+    max-width: none;
+    font-size: clamp(1.5rem, 6.5vw, 2.1rem);
+  }
 }
 
 /* ---------- Content pages ---------- */
