@@ -23,6 +23,12 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
+  <div class="cosmos" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+    <span class="swoosh"></span>
+  </div>
   <div class="stars" aria-hidden="true"></div>
 
   <header class="site-header">
@@ -37,120 +43,72 @@
 
   <main id="main">
     <div class="wrap">
-      <div class="hero">
-        <h1>Purple Piano</h1>
+      <div class="hero" id="hero">
+        <h1 class="magnetic" data-text="Purple Piano">Purple Piano</h1>
         <p class="tagline">A cosmic piano for small hands.</p>
-        <p class="subtitle">
-          A full-screen rainbow keyboard for iPhone and iPad, built for toddlers.
-          Every note sounds good together, so there is nothing to get wrong.
-        </p>
 
-        <div class="badge-row">
-          <!-- Replace this span with the real App Store badge link once approved:
-               <a class="badge" href="https://apps.apple.com/app/idXXXXXXXXX"> ... </a> -->
-          <span class="badge">
-            <svg width="26" height="30" viewBox="0 0 24 28" aria-hidden="true" fill="#f4eefe">
+        <div class="cta-row">
+          <!-- Replace with the real App Store link once approved:
+               <a class="btn btn-primary" href="https://apps.apple.com/app/idXXXXXXXXX"> ... </a> -->
+          <span class="btn btn-primary is-pending">
+            <svg width="20" height="24" viewBox="0 0 24 28" aria-hidden="true" fill="currentColor">
               <path d="M17.5 14.8c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.7-.2-3.3 1-4.1 1-.9 0-2.2-1-3.6-1-1.8 0-3.5 1.1-4.5 2.7-1.9 3.3-.5 8.2 1.4 10.9.9 1.3 2 2.8 3.4 2.7 1.4-.1 1.9-.9 3.5-.9s2.1.9 3.6.8c1.5 0 2.4-1.3 3.3-2.7 1-1.5 1.5-3 1.5-3.1-.1 0-2.9-1.1-2.9-4.2zM14.8 6.3c.8-.9 1.3-2.2 1.1-3.5-1.1.1-2.5.8-3.3 1.7-.7.8-1.3 2.1-1.2 3.4 1.3.1 2.6-.6 3.4-1.6z"/>
             </svg>
             <span>
-              <span class="badge-sub">Coming soon to the</span>
-              <span class="badge-main">App Store</span>
+              <span class="btn-sub">Coming soon to the</span>
+              <span class="btn-main">App Store</span>
             </span>
           </span>
-          <p class="badge-note">Available now for testers via TestFlight.</p>
-        </div>
-      </div>
 
-      <div class="piano-frame">
-        <div class="piano-bar">
-          <span class="song-name">Cosmic Dream</span>
-          <span class="dot on"></span><span class="dot"></span><span class="dot"></span>
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        </div>
-        <div class="keys" role="img" aria-label="The Purple Piano keyboard: seven candy-colored keys — C pink, D peach, E gold, F green, G cyan, A blue, B lavender.">
-          <div class="key c">C<span class="blackkey"></span></div>
-          <div class="key d">D<span class="blackkey"></span></div>
-          <div class="key e">E</div>
-          <div class="key f">F<span class="blackkey"></span></div>
-          <div class="key g">G<span class="blackkey"></span></div>
-          <div class="key a">A<span class="blackkey"></span></div>
-          <div class="key b">B</div>
+          <a class="btn btn-ghost" href="https://willnewton.dev/p/purple-piano">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/>
+            </svg>
+            <span>
+              <span class="btn-sub">No download needed</span>
+              <span class="btn-main">Play on the web</span>
+            </span>
+          </a>
         </div>
       </div>
     </div>
 
-    <section>
-      <div class="wrap">
-        <div class="center">
-          <h2>Made for the very small</h2>
-          <p class="section-intro">
-            Big keys, big colors, big sounds. Nothing to read, nothing to buy, nothing to break.
-          </p>
+    <div class="stage">
+      <div class="ipad" role="img" aria-label="Purple Piano running on an iPad: the song maker grid with a drawn tune above a full rainbow keyboard.">
+        <div class="ipad-screen">
+          <div class="app-bar">
+            <span class="app-brand">Purple Piano</span>
+            <span class="app-song">Buzzy Bee</span>
+            <span class="app-dots"><i></i><i></i><i class="on"></i><i></i><i></i></span>
+          </div>
+
+          <div class="app-knobs">
+            <span class="knob k1"></span><span class="knob k2"></span><span class="knob k3"></span>
+            <span class="knob k4"></span><span class="knob k5"></span>
+            <span class="tone-box"><i></i><i></i><i class="on"></i><i></i></span>
+          </div>
+
+          <div class="app-grid">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span class="lit gold"></span><span class="lit gold"></span>
+            <span class="lit pink"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span class="lit pink"></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span class="lit blue"></span><span></span><span></span><span class="lit blue"></span><span class="lit blue"></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span class="lit cyan"></span><span></span><span></span><span></span><span></span><span></span><span class="lit cyan"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+
+          <div class="app-keys">
+            <span class="wk c" data-n="C"></span><span class="wk d" data-n="D"></span><span class="wk e" data-n="E"></span>
+            <span class="wk f" data-n="F"></span><span class="wk g" data-n="G"></span><span class="wk a" data-n="A"></span>
+            <span class="wk b" data-n="B"></span><span class="wk c" data-n="C"></span><span class="wk d" data-n="D"></span>
+            <span class="wk e" data-n="E"></span><span class="wk f" data-n="F"></span><span class="wk g" data-n="G"></span>
+            <span class="wk a" data-n="A"></span><span class="wk b" data-n="B"></span>
+          </div>
         </div>
-
-        <ul class="features">
-          <li class="card">
-            <div class="card-icon" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c4b0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-            </div>
-            <h3>No wrong notes</h3>
-            <p>
-              The keys are tuned to a pentatonic scale, so every combination sounds
-              musical. Mashing the whole keyboard with both hands still sounds lovely.
-            </p>
-          </li>
-
-          <li class="card">
-            <div class="card-icon" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c4b0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
-            </div>
-            <h3>Draw a tune</h3>
-            <p>
-              In the song maker, kids drag a finger across the squares to draw a melody
-              that loops forever. The keys light up as it plays so they can follow along.
-              MAGIC invents a new singable tune with one tap.
-            </p>
-          </li>
-
-          <li class="card">
-            <div class="card-icon" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c4b0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5"/><circle cx="12" cy="12" r="1.5" fill="#c4b0ff"/></svg>
-            </div>
-            <h3>Twist the knobs</h3>
-            <p>
-              Five big sound knobs — Space, Wobble, Sparkle, Echo and Dream — plus four
-              tones: Soft, Mellow, Buzzy and Chunky. Every twist changes the sound
-              instantly, and every pitch keeps its own rainbow color.
-            </p>
-          </li>
-
-          <li class="card">
-            <div class="card-icon" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c4b0ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-            </div>
-            <h3>Safe by design</h3>
-            <p>
-              No ads, no in-app purchases, no accounts, no internet. Purple Piano works
-              completely offline and collects no data whatsoever. Hand over the iPad
-              without a second thought.
-            </p>
-          </li>
-        </ul>
       </div>
-    </section>
-
-    <div class="wrap"><hr class="rainbow-rule"></div>
-
-    <section>
-      <div class="wrap center">
-        <h2>Every C is always pink</h2>
-        <p class="section-intro">
-          Each pitch has its own fixed color, everywhere in the app — on the keys, in the
-          song maker, in the glow when a note plays. Long before they can read music,
-          kids start to see it.
-        </p>
-      </div>
-    </section>
+    </div>
   </main>
   <footer class="site-footer">
     <div class="wrap">
@@ -161,5 +119,38 @@
       <p class="copyright">&copy; 2026 William Newton</p>
     </div>
   </footer>
+
+  <script>
+    // Cursor-reactive hero. Pointer-only, motion-safe, and purely decorative:
+    // the page is fully correct with this script absent.
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+      if (reduce.matches || !fine.matches) return;
+
+      var hero = document.getElementById('hero');
+      if (!hero) return;
+
+      var raf = 0;
+      function write(tx, ty, glow) {
+        hero.style.setProperty('--mx', tx.toFixed(3));
+        hero.style.setProperty('--my', ty.toFixed(3));
+        hero.style.setProperty('--glow', glow.toFixed(3));
+      }
+      function onMove(e) {
+        var r = hero.getBoundingClientRect();
+        if (!r.width) return;
+        var tx = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2));
+        var ty = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2));
+        var glow = 1 - Math.min(1, Math.sqrt(tx * tx + ty * ty) / 1.4);
+        // Write immediately, then coalesce any burst of moves into one more frame.
+        if (raf) return;
+        write(tx, ty, glow);
+        raf = requestAnimationFrame(function () { raf = 0; });
+      }
+      window.addEventListener('pointermove', onMove, { passive: true });
+      window.addEventListener('pointerleave', function () { write(0, 0, 0); }, { passive: true });
+    })();
+  </script>
 </body>
 </html>
