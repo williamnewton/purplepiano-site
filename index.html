@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@800&display=swap">
-  <link rel="stylesheet" href="/style.css?v=5b44b74d">
+  <link rel="stylesheet" href="/style.css?v=31042bf1">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -122,7 +122,7 @@
       <div class="ipad" role="img" aria-label="Purple Piano running on an iPad: the song maker grid with a drawn tune above a full rainbow keyboard.">
       <div class="ipad-screen">
         <div class="app-bar">
-          <span class="app-brand">Purple Piano</span>
+          <span class="app-brand wordmark"><span class="wm-purple">purple</span><span class="wm-piano">piano</span></span>
           <span class="app-preset">
             <i class="nav">&#8249;</i>
             <span class="preset-mid">
@@ -471,7 +471,6 @@
       var nextAt = performance.now() + 800;
       var phCells = [];   // cells carrying the playhead highlight
       var lit = [];       // {el, cls} waiting to be un-lit at el._seqUntil
-      var tickUntil = 0;
 
       function arm(el, cls, until) {
         el.classList.add(cls);
@@ -495,10 +494,6 @@
           arm(col.notes[i].cell, 'hit', until);
           arm(col.notes[i].key, 'pressed', until);
         }
-        if (step % 4 === 0) {
-          play.classList.add('tick');
-          tickUntil = now + 140;
-        }
       }
 
       function release(now) {
@@ -506,10 +501,6 @@
           if (now < lit[i].el._seqUntil) continue;
           lit[i].el.classList.remove(lit[i].cls);
           lit.splice(i, 1);
-        }
-        if (tickUntil && now >= tickUntil) {
-          play.classList.remove('tick');
-          tickUntil = 0;
         }
       }
 
