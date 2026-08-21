@@ -27,6 +27,7 @@
 
   --wrap: 1080px;
   --mx: 0; --my: 0; --glow: 0;
+  --wordmark: "Poppins", ui-rounded, system-ui, sans-serif;
   --display: "Baloo 2", ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif;
   --body: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
@@ -97,13 +98,12 @@ body {
 }
 .site-header .wrap { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
 
+/* The brand link now wraps the wordmark, which carries its own type —
+   no uppercasing or extra tracking on top of it. */
 .brand {
-  display: inline-flex; align-items: center; gap: .6rem;
-  font-family: var(--display); font-weight: 800;
-  font-size: 1.15rem; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--ink); text-decoration: none;
+  display: inline-flex; align-items: center;
+  text-decoration: none;
 }
-.brand svg { flex: none; }
 
 .nav { display: flex; gap: .4rem; }
 .nav a {
@@ -428,7 +428,7 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   .cta-row .btn { justify-content: center; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-mark, .tagline, .ipad { transition: none !important; transform: none !important; }
+  .hero-wordmark, .tagline, .ipad { transition: none !important; transform: none !important; }
   .stage:hover .ipad { transform: rotateX(7deg) rotateY(-13deg) rotateZ(2deg); }
 }
 
@@ -521,25 +521,50 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 
 .tag-break { display: none; }
 
-/* The logo IS the hero title: an <h1> wraps it so the page keeps a real
-   top-level heading (the svg's aria-label supplies the text), and the mark
-   carries the cursor-reactive motion the type used to have. */
-.hero-title { margin: 0; font-size: 0; line-height: 0; }
-.hero-mark {
-  display: block;
-  width: clamp(112px, 17vw, 216px);
-  height: auto;
-  margin: 0 auto clamp(1.25rem, 3vw, 2rem);
-  filter: drop-shadow(0 24px 55px rgba(0,0,0,.55));
+/* ---------- Wordmark ----------
+   The Purple Piano logo, matched to the Paper source: Poppins 800 at
+   -0.02em, "purple" in solid lavender and "piano" carrying the rainbow
+   the app uses for pitch colour. */
+.wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--wordmark);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.22;
+  white-space: nowrap;
+}
+.wm-purple { color: #B79BFF; }
+.wm-piano {
+  margin-left: 0.16em;
+  /* sRGB first as the fallback, then the oklab original for browsers that
+     support interpolation hints — oklab keeps the mid-tones from going
+     muddy between the stops. */
+  background-image: linear-gradient(90deg, #f45d9e 0%, #ff9a3d 20%, #f2d93a 40%, #5be0a8 60%, #47c8f0 80%, #8b7bf0 100%);
+  background-image: linear-gradient(in oklab 90deg, oklab(69.1% 0.194 -0.011) 0%, oklab(77.6% 0.082 0.136) 20%, oklab(88% -0.028 0.165) 40%, oklab(81.8% -0.136 0.043) 60%, oklab(77.9% -0.091 -0.084) 80%, oklab(65.2% 0.049 -0.162) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* The wordmark IS the hero title, and carries the cursor-reactive motion. */
+.hero-wordmark {
+  display: flex;
+  justify-content: center;
+  font-size: clamp(2.5rem, 7vw, 4.75rem);
+  margin-bottom: clamp(1rem, 2.5vw, 1.5rem);
   transform: translate3d(calc(var(--mx) * 12px), calc(var(--my) * 8px), 0);
   transition: transform .25s cubic-bezier(.22,.61,.36,1);
 }
-.hero:hover .hero-mark { will-change: transform; }
+.hero:hover .hero-wordmark { will-change: transform; }
+
+/* Header lockup on the inner pages. */
+.brand-wordmark { font-size: 1.25rem; }
 
 @media (max-width: 700px) {
   .site-header { display: none; }
   .hero { padding-top: clamp(3rem, 12vh, 6rem); }
-  .hero-mark { width: clamp(96px, 30vw, 148px); }
+
   .tag-break { display: inline; }
   .tagline {
     max-width: none;
