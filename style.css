@@ -134,8 +134,8 @@ h1 {
   font-size: clamp(1.25rem, 3.4vw, 1.75rem);
   color: var(--ink);
   margin: 0 auto 1rem;
-  max-width: 22ch;
   line-height: 1.3;
+  text-wrap: balance;
 }
 
 .subtitle { color: var(--ink-soft); max-width: 46ch; margin: 0 auto 2rem; font-size: 1.0625rem; }
@@ -565,7 +565,6 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 
   .tag-break { display: inline; }
   .tagline {
-    max-width: none;
     font-size: clamp(1.5rem, 6.5vw, 2.1rem);
   }
 }
