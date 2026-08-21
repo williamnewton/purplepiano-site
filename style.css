@@ -415,6 +415,69 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   box-shadow: inset 0 -5px 0 var(--bk-lip), 0 4px 8px oklch(0.15 0.03 275 / .6);
 }
 
+/* ---------- Sequencer animation ----------
+   Class hooks driven by the inline sequencer script: .ph marks the
+   playhead column, .hit flashes a lit cell, .pressed presses its key.
+   The --seq-* dials are set by the script (URL-tunable via the jig).
+   Decorative only — with JS off none of these classes ever appear. */
+.cell { transition: background-color .15s ease, border-color .15s ease; }
+.cell.ph:not(.on) { background: oklch(0.98 0 0 / .2); border-color: oklch(0.98 0 0 / .32); }
+.cell.on { transition: transform .12s ease, filter .12s ease, box-shadow .12s ease; }
+.cell.on.hit {
+  transform: scale(1.12);
+  filter: brightness(var(--seq-flash, 1.45)) saturate(1.15);
+  box-shadow: 0 0 calc(1.6cqw * var(--seq-glow, 1)) var(--halo), 0 0 .5cqw var(--halo);
+}
+.wk { transition: transform .12s cubic-bezier(.2,.7,.3,1), box-shadow .12s ease, filter .12s ease; }
+.wk.pressed {
+  transform: translateY(calc(var(--seq-dip, .7) * 1cqw));
+  filter: saturate(1.35) brightness(1.05);
+  box-shadow: inset 0 -3px 0 var(--lip), 0 0 calc(2.4cqw * var(--seq-glow, 1)) var(--lip);
+}
+.play { transition: transform .12s ease, box-shadow .3s ease, background-color .3s ease; }
+.play.playing {
+  background: oklch(0.85 0.12 300);
+  box-shadow: 0 0 2cqw oklch(0.78 0.1 300 / .55);
+}
+.play.tick { transform: scale(1.05); }
+
+/* ---------- Tuning jig (TEMPORARY) ----------
+   Only rendered when the page is loaded with ?jig — sliders for dialling
+   the sequencer animation, mirrored into the URL. Remove this block once
+   the chosen numbers are baked in as defaults. */
+.seq-jig {
+  position: fixed; right: 1rem; bottom: 1rem; z-index: 80;
+  width: min(320px, calc(100vw - 2rem));
+  background: rgba(20, 10, 36, .92);
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--r-md);
+  padding: 1rem 1.1rem;
+  font-size: .85rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 20px 50px -20px rgba(0,0,0,.8);
+}
+.seq-jig b {
+  display: block; margin-bottom: .5rem;
+  font-family: var(--display); font-size: .8rem;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent-hot);
+}
+.seq-jig label {
+  display: grid; grid-template-columns: 3.2rem 1fr 2.8rem;
+  align-items: center; gap: .6rem; margin: .35rem 0;
+  color: var(--ink-soft);
+}
+.seq-jig label span:last-child { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+.seq-jig input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
+.seq-jig code {
+  display: block; margin-top: .6rem; padding: .45rem .6rem;
+  border-radius: .5rem; background: rgba(255,255,255,.07);
+  color: var(--ink-soft); font-size: .72rem;
+  word-break: break-all; user-select: all;
+}
+.seq-jig small { display: block; margin-top: .35rem; color: var(--ink-dim); font-size: .7rem; }
+
 @media (max-width: 700px) {
   .ipad { transform: rotateX(4deg) rotateY(-7deg); width: min(96%, 560px); }
   .app-brand, .tone { display: none; }
