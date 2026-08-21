@@ -45,7 +45,6 @@ body {
   background-image:
     radial-gradient(ellipse 120% 80% at 50% -10%, var(--bg-mid) 0%, transparent 60%),
     radial-gradient(ellipse 90% 60% at 85% 100%, #251043 0%, transparent 65%);
-  background-attachment: fixed;
   overflow-x: hidden;
 }
 
@@ -57,6 +56,7 @@ body {
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  contain: strict;
 }
 .stars span {
   position: absolute;
@@ -143,9 +143,16 @@ h1 {
 .subtitle { color: var(--ink-soft); max-width: 46ch; margin: 0 auto 2rem; font-size: 1.0625rem; }
 
 /* ---------- Cosmic background ---------- */
-.cosmos { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.cosmos {
+  position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0;
+  /* The orbs carry blur(70px) over ~830k px². Isolating this subtree keeps
+     that rasterisation off the scroll path — it is painted once, then only
+     composited. */
+  contain: strict;
+  transform: translateZ(0);
+}
 
-.orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; }
+.orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; transition: none; }
 .orb-1 { width: 60vw; height: 60vw; left: -18vw; top: -8vh;
   background: radial-gradient(circle, #ff8fc7 0%, #b06bff 45%, transparent 70%); }
 .orb-2 { width: 52vw; height: 52vw; right: -16vw; top: -14vh;
@@ -161,6 +168,7 @@ h1 {
     radial-gradient(58% 100% at 74% 52%, rgba(150,225,255,.24), transparent 64%);
   transform: rotate(-11deg);
   filter: blur(46px);
+  transition: none;
 }
 
 /* ---------- Hero ---------- */
@@ -172,8 +180,10 @@ h1.magnetic {
   position: relative;
   transform: translate3d(calc(var(--mx) * 12px), calc(var(--my) * 8px), 0);
   transition: transform .25s cubic-bezier(.22,.61,.36,1);
-  will-change: transform;
 }
+/* will-change is set only while a pointer is actually driving the effect —
+   left on permanently it holds a compositor layer for the whole session. */
+.hero:hover h1.magnetic { will-change: transform; }
 h1.magnetic::after {
   content: attr(data-text);
   position: absolute; inset: 0;
@@ -448,10 +458,24 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
    effect reads from the BUTTON, not from hovering the iPad itself. */
 .stage .ipad.is-lifted {
   transform: rotateX(2deg) rotateY(-4deg) rotateZ(0deg) scale(1.045);
-  box-shadow: 0 70px 120px -40px rgba(0,0,0,.8),
-              0 0 0 1px rgba(255,255,255,.18),
-              0 0 90px -30px var(--accent);
 }
+/* The lift's glow rides on a pseudo-element's OPACITY rather than animating
+   box-shadow on the panel itself: opacity is composited, whereas a changing
+   shadow repaints a 1000px-wide blurred region every frame. */
+.ipad::after {
+  content: "";
+  position: absolute;
+  inset: -2%;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: 0 70px 120px -40px rgba(0,0,0,.8),
+              0 0 90px -30px var(--accent);
+  opacity: 0;
+  transition: opacity .45s ease;
+  pointer-events: none;
+}
+.stage .ipad.is-lifted::after { opacity: 1; }
+.ipad.is-flying::after { display: none; }
 
 /* While launching, the iPad is promoted to a fixed layer and scaled to fill
    the viewport. --fly-* are measured and set by script so the element starts
@@ -504,6 +528,7 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 
 @media (prefers-reduced-motion: reduce) {
   .stage .ipad.is-lifted { transform: none; }
+  .ipad::after { transition: none; }
   .ipad.is-flying.go { transition: none; }
   .launch-veil { transition: none; }
 }
