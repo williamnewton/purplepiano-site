@@ -537,8 +537,13 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
    exactly where it already sits — no jump at the hand-off. */
 /* .stage sets `perspective`, which makes it a containing block for fixed
    descendants — so a flying iPad would anchor to the stage, not the
-   viewport. Drop the perspective while a launch is in flight. */
-.stage.is-releasing { perspective: none; }
+   viewport. Drop the perspective while a launch is in flight.
+   And because .stage's z-index:1 makes it a stacking context, the flying
+   panel's own z-index only counts inside it — the body-level veil (z 55)
+   was painting over the panel and reading as a fade to black. Lift the
+   whole stage above the veil so the panel holds at full opacity right up
+   to the hand-off to the real app. */
+.stage.is-releasing { perspective: none; z-index: 61; }
 
 .ipad.is-flying {
   position: fixed;
@@ -548,7 +553,7 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   z-index: 60;
   transform: none;
   transition: none;
-  will-change: transform, opacity;
+  will-change: transform;
 }
 .ipad.is-flying.go {
   transform: translate3d(var(--fly-dx), var(--fly-dy), 0) scale(var(--fly-scale));
