@@ -228,12 +228,14 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   position: relative; z-index: 1;
   padding: clamp(.25rem, 1.5vw, 1rem) 0 clamp(3rem, 8vw, 5rem);
   perspective: 1800px;
-  overflow: hidden;
+  /* No overflow clip: the hover lift scales the tilted panel (and its
+     glow) past the stage's box, and a clip here sliced them flat. The
+     body's overflow-x guard still prevents horizontal scrollbars. */
 }
 .ipad {
   /* 86%, not 92%: the perspective tilt projects the near edge outward, and
-     at mid widths (~700–1100px) the overhang crossed the stage's clip edge
-     and got sliced flat. Wide screens still cap at 1060px. */
+     at mid widths (~700–1100px) the overhang crossed the viewport edge and
+     got sliced flat. Wide screens still cap at 1060px. */
   width: min(86%, 1060px);
   margin-inline: auto;
   aspect-ratio: 16 / 11;
@@ -536,7 +538,7 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 /* .stage sets `perspective`, which makes it a containing block for fixed
    descendants — so a flying iPad would anchor to the stage, not the
    viewport. Drop the perspective while a launch is in flight. */
-.stage.is-releasing { perspective: none; overflow: visible; }
+.stage.is-releasing { perspective: none; }
 
 .ipad.is-flying {
   position: fixed;
