@@ -199,7 +199,15 @@ h1 {
   color: #24123f;
   box-shadow: 0 12px 34px -10px rgba(190,160,255,.6);
 }
-.btn-primary.is-pending { cursor: default; }
+/* Pending = disabled: muted glass instead of the filled CTA, no glow, so
+   it clearly reads as not-yet-tappable next to the live ghost button. */
+.btn-primary.is-pending {
+  cursor: default;
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.12);
+  color: var(--ink-dim);
+  box-shadow: none;
+}
 
 .btn-ghost .btn-main { font-size: 1.15rem; }
 .btn-ghost {
@@ -220,12 +228,14 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   position: relative; z-index: 1;
   padding: clamp(.25rem, 1.5vw, 1rem) 0 clamp(3rem, 8vw, 5rem);
   perspective: 1800px;
-  overflow: hidden;
+  /* No overflow clip: the hover lift scales the tilted panel (and its
+     glow) past the stage's box, and a clip here sliced them flat. The
+     body's overflow-x guard still prevents horizontal scrollbars. */
 }
 .ipad {
   /* 86%, not 92%: the perspective tilt projects the near edge outward, and
-     at mid widths (~700–1100px) the overhang crossed the stage's clip edge
-     and got sliced flat. Wide screens still cap at 1060px. */
+     at mid widths (~700–1100px) the overhang crossed the viewport edge and
+     got sliced flat. Wide screens still cap at 1060px. */
   width: min(86%, 1060px);
   margin-inline: auto;
   aspect-ratio: 16 / 11;
@@ -527,8 +537,13 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
    exactly where it already sits — no jump at the hand-off. */
 /* .stage sets `perspective`, which makes it a containing block for fixed
    descendants — so a flying iPad would anchor to the stage, not the
-   viewport. Drop the perspective while a launch is in flight. */
-.stage.is-releasing { perspective: none; overflow: visible; }
+   viewport. Drop the perspective while a launch is in flight.
+   And because .stage's z-index:1 makes it a stacking context, the flying
+   panel's own z-index only counts inside it — the body-level veil (z 55)
+   was painting over the panel and reading as a fade to black. Lift the
+   whole stage above the veil so the panel holds at full opacity right up
+   to the hand-off to the real app. */
+.stage.is-releasing { perspective: none; z-index: 61; }
 
 .ipad.is-flying {
   position: fixed;
@@ -538,7 +553,7 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   z-index: 60;
   transform: none;
   transition: none;
-  will-change: transform, opacity;
+  will-change: transform;
 }
 .ipad.is-flying.go {
   transform: translate3d(var(--fly-dx), var(--fly-dy), 0) scale(var(--fly-scale));

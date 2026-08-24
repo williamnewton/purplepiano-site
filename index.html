@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@800&display=swap">
-  <link rel="stylesheet" href="/style.css?v=713d8732">
+  <link rel="stylesheet" href="/style.css?v=1758a92a">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -103,7 +103,7 @@
               <path d="M17.5 14.8c0-2.7 2.2-4 2.3-4.1-1.3-1.8-3.2-2.1-3.9-2.1-1.7-.2-3.3 1-4.1 1-.9 0-2.2-1-3.6-1-1.8 0-3.5 1.1-4.5 2.7-1.9 3.3-.5 8.2 1.4 10.9.9 1.3 2 2.8 3.4 2.7 1.4-.1 1.9-.9 3.5-.9s2.1.9 3.6.8c1.5 0 2.4-1.3 3.3-2.7 1-1.5 1.5-3 1.5-3.1-.1 0-2.9-1.1-2.9-4.2zM14.8 6.3c.8-.9 1.3-2.2 1.1-3.5-1.1.1-2.5.8-3.3 1.7-.7.8-1.3 2.1-1.2 3.4 1.3.1 2.6-.6 3.4-1.6z"/>
             </svg>
             <span>
-              <span class="btn-sub">Coming soon to the</span>
+              <span class="btn-sub">Coming soon</span>
               <span class="btn-main">App Store</span>
             </span>
           </span>
@@ -382,7 +382,10 @@
           window.location.href = url;
         }
         ipad.addEventListener('transitionend', function (ev) {
-          if (ev.propertyName === 'transform') go();
+          // transitionend bubbles: the sequencer's key presses end their own
+          // transform transitions during the flight, so only the panel's own
+          // transform may trigger the navigation.
+          if (ev.target === ipad && ev.propertyName === 'transform') go();
         });
         setTimeout(go, 900);
       });
