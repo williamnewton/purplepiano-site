@@ -223,7 +223,10 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   overflow: hidden;
 }
 .ipad {
-  width: min(92%, 1060px);
+  /* 86%, not 92%: the perspective tilt projects the near edge outward, and
+     at mid widths (~700–1100px) the overhang crossed the stage's clip edge
+     and got sliced flat. Wide screens still cap at 1060px. */
+  width: min(86%, 1060px);
   margin-inline: auto;
   aspect-ratio: 16 / 11;
   border-radius: clamp(14px, 2vw, 26px);
@@ -329,7 +332,6 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 }
 
 .tone { position: absolute; right: 2cqw; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: .3cqw; }
-.tone-label { font-size: .85cqw; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; color: oklch(0.75 0.04 300); }
 .tone-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .3cqw; }
 .tone-grid i {
   border-radius: 999px; padding: .45cqw .8cqw;
