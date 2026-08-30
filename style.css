@@ -199,16 +199,6 @@ h1 {
   color: #24123f;
   box-shadow: 0 12px 34px -10px rgba(190,160,255,.6);
 }
-/* Pending = disabled: muted glass instead of the filled CTA, no glow, so
-   it clearly reads as not-yet-tappable next to the live ghost button. */
-.btn-primary.is-pending {
-  cursor: default;
-  background: rgba(255,255,255,.06);
-  border-color: rgba(255,255,255,.12);
-  color: var(--ink-dim);
-  box-shadow: none;
-}
-
 .btn-ghost .btn-main { font-size: 1.15rem; }
 .btn-ghost {
   background: rgba(255,255,255,.08);
