@@ -1,5 +1,5 @@
 const http=require('http'),fs=require('fs'),path=require('path');
-const root='/Users/williamnewton/Documents/GitHub/purple-piano-site';
+const root=path.join(__dirname,'..');
 const types={'.html':'text/html','.css':'text/css','.xml':'application/xml','.txt':'text/plain','.svg':'image/svg+xml'};
 http.createServer((req,res)=>{
   let p=decodeURIComponent(req.url.split('?')[0]);
