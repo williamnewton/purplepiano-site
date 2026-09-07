@@ -181,6 +181,9 @@ h1 {
 
 /* ---------- Buttons ---------- */
 .cta-row {
+  --badge-h: 56px;
+  --badge-r: calc(var(--badge-h) * 7 / 40); /* Apple's 7/40 corner */
+  --sf: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
   display: flex; flex-wrap: wrap; justify-content: center;
   gap: .85rem; margin-top: 2.25rem;
 }
@@ -197,17 +200,16 @@ h1 {
    and picks up SF Pro on Apple devices. Sized by --badge-h; the 3:1 ratio
    and the 7/40 corner radius come from Apple's 119.66 x 40 artwork. */
 .btn-appstore {
-  --badge-h: 56px;
   padding: 0; border: 0; gap: 0;
   height: var(--badge-h); width: calc(var(--badge-h) * 3);
-  border-radius: calc(var(--badge-h) * 7 / 40);
+  border-radius: var(--badge-r);
   background: #000;
   box-shadow: 0 10px 30px -12px rgba(0,0,0,.7);
   -webkit-tap-highlight-color: transparent;
 }
 .appstore-badge { display: block; width: 100%; height: 100%; }
 .appstore-badge text {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: var(--sf);
   text-rendering: geometricPrecision;
 }
 .appstore-sub  { font-size: 7px; font-weight: 400; letter-spacing: .005em; }
@@ -217,7 +219,17 @@ a.btn-appstore:hover { box-shadow: 0 14px 34px -12px rgba(0,0,0,.8); }
 a.btn-appstore:hover .appstore-edge { fill: #d4d4d4; }
 a.btn-appstore:focus-visible { outline: 2px solid var(--accent-hot); outline-offset: 3px; }
 
-/* Keep the browser button the badge's height so the pair reads as a set. */
+/* The browser button borrows the badge's height, radius and typeface so
+   the pair reads as one set. */
+.btn-ghost {
+  min-height: var(--badge-h); border-radius: var(--badge-r);
+  padding: 0 1.4rem; gap: .6rem;
+}
+.btn-ghost .btn-main {
+  font-family: var(--sf); font-size: 1.0625rem; font-weight: 600;
+  letter-spacing: -.012em; line-height: 1;
+}
+.btn-ghost svg { width: 19px; height: 19px; }
 .btn-ghost { min-height: 56px; }
 .btn-ghost .btn-main { font-size: 1.15rem; }
 .btn-ghost {
