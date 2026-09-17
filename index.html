@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@800&display=swap">
-  <link rel="stylesheet" href="/style.css?v=3cd703e8">
+  <link rel="stylesheet" href="/style.css?v=32d1bafb">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -124,7 +124,7 @@
     </div>
 
     <div class="stage">
-      <div class="ipad" role="img" aria-label="Purple Piano running on an iPad: the song maker grid with a drawn tune above a full rainbow keyboard.">
+      <a class="ipad" id="play-stage" href="https://playground.willnewton.dev/p/purple-piano" aria-label="Play Purple Piano in your browser — the song maker grid with a drawn tune above a full rainbow keyboard.">
       <div class="ipad-screen">
         <div class="app-bar">
           <span class="app-brand wordmark"><span class="wm-purple">purple</span><span class="wm-piano">piano</span></span>
@@ -235,7 +235,7 @@
           </div>
         </div>
       </div>
-      </div>
+      </a>
     </div>
   </main>
   <footer class="site-footer">
@@ -282,10 +282,11 @@
   </script>
 
   <script>
-    // Play-in-browser launch: lift the iPad while the button is hovered,
+    // Play-in-browser launch: lift the iPad while either trigger is hovered,
     // prefetch the player, then fly the iPad to fullscreen on click before
-    // navigating. Entirely progressive — with this script absent (or JS off)
-    // the button is a plain link that navigates immediately.
+    // navigating. Both the CTA button and the iPad mockup itself launch it.
+    // Entirely progressive — with this script absent (or JS off) each is a
+    // plain link that navigates immediately.
     (function () {
       var btn = document.getElementById('play-web');
       var ipad = document.querySelector('.ipad');
@@ -313,27 +314,16 @@
         if (reduce.matches) return;
         ipad.classList.toggle('is-lifted', on);
       }
-      btn.addEventListener('pointerenter', function () { warm(); lift(true); });
-      btn.addEventListener('pointerleave', function () { lift(false); });
-      btn.addEventListener('focus', function () { warm(); lift(true); });
-      btn.addEventListener('blur', function () { lift(false); });
-      btn.addEventListener('touchstart', warm, { passive: true });
 
-      // --- Launch ---
+      // --- The flight, shared by every trigger ---
       var launching = false;
-      btn.addEventListener('click', function (e) {
-        // Let modified clicks (new tab/window) and non-primary buttons behave
-        // normally — never trap a deliberate new-tab open in an animation.
-        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-        if (launching) { e.preventDefault(); return; }
-        if (reduce.matches) return; // straight navigation, no flight
-
-        e.preventDefault();
+      function launch() {
+        if (launching) return;
         launching = true;
         warm();
 
         // Fixed positioning is relative to the VIEWPORT, so measure the
-        // iPad's on-screen rect and, if the button was clicked while the
+        // iPad's on-screen rect and, if the trigger was used while the
         // panel sits below the fold, start the flight from a visible origin
         // instead — otherwise it would fly off the bottom of the screen.
         var r = ipad.getBoundingClientRect();
@@ -393,7 +383,29 @@
           if (ev.target === ipad && ev.propertyName === 'transform') go();
         });
         setTimeout(go, 900);
-      });
+      }
+
+      // --- Wire up a trigger ---
+      function arm(el) {
+        el.addEventListener('pointerenter', function () { warm(); lift(true); });
+        el.addEventListener('pointerleave', function () { lift(false); });
+        el.addEventListener('focus', function () { warm(); lift(true); });
+        el.addEventListener('blur', function () { lift(false); });
+        el.addEventListener('touchstart', warm, { passive: true });
+
+        el.addEventListener('click', function (e) {
+          // Let modified clicks (new tab/window) and non-primary buttons
+          // behave normally — never trap a deliberate new-tab open.
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+          if (launching) { e.preventDefault(); return; }
+          if (reduce.matches) return; // straight navigation, no flight
+          e.preventDefault();
+          launch();
+        });
+      }
+
+      arm(btn);
+      if (ipad.tagName === 'A') arm(ipad);
 
       // Coming back via the back button restores a cached page mid-flight;
       // clear the launch state so the site is usable again.
