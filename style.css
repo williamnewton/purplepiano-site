@@ -76,7 +76,10 @@ body {
 }
 
 /* ---------- Layout ---------- */
-.wrap { width: min(100% - 2.5rem, var(--wrap)); margin-inline: auto; position: relative; z-index: 1; }
+/* The home page uses viewport-fit=cover (so the launch replica can reach
+   the glass edges like the player does); the insets keep content clear of
+   a landscape iPhone's notch. They are 0 everywhere else. */
+.wrap { width: min(100% - 2.5rem - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px), var(--wrap)); margin-inline: auto; position: relative; z-index: 1; }
 
 .skip-link {
   position: absolute; left: -9999px; top: 0;
@@ -542,8 +545,9 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 }
 
 /* ---------- Launch: hover lift + zoom to fullscreen ----------
-   The iPad rises toward the reader while the play button is hovered, then
-   flies up to fill the viewport on click while the target page preloads. */
+   The iPad rises toward the reader while the play button is hovered; on
+   click its screen becomes the player and grows to fill the viewport while
+   the target page preloads. */
 
 /* Hover lift. .is-lifted is set by script on pointer enter/leave so the
    effect reads from the BUTTON, not from hovering the iPad itself. */
@@ -566,66 +570,44 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   pointer-events: none;
 }
 .stage .ipad.is-lifted::after { opacity: 1; }
-.ipad.is-flying::after { display: none; }
 
-/* While launching, the iPad is promoted to a fixed layer and scaled to fill
-   the viewport. --fly-* are measured and set by script so the element starts
-   exactly where it already sits — no jump at the hand-off. */
-/* .stage sets `perspective`, which makes it a containing block for fixed
-   descendants — so a flying iPad would anchor to the stage, not the
-   viewport. Drop the perspective while a launch is in flight.
-   And because .stage's z-index:1 makes it a stacking context, the flying
-   panel's own z-index only counts inside it — the body-level veil (z 55)
-   was painting over the panel and reading as a fade to black. Lift the
-   whole stage above the veil so the panel holds at full opacity right up
-   to the hand-off to the real app. */
-.stage.is-releasing { perspective: none; z-index: 61; }
+/* Launch. The flight itself is the player replica below (.ppx); the panel
+   just settles flat underneath it while the replica fades in over its
+   screen. .is-measuring removes the tilt for one synchronous measurement
+   of that flat rect. */
+.stage .ipad.is-measuring { transform: none; transition: none; }
+.stage .ipad.is-launched { transform: none; transition: transform .22s ease-out; }
+.ipad.is-launched::after { display: none; }
 
-.ipad.is-flying {
-  position: fixed;
-  left: var(--fly-x); top: var(--fly-y);
-  width: var(--fly-w); height: var(--fly-h);
-  margin: 0;
-  z-index: 60;
-  transform: none;
-  transition: none;
-  will-change: transform;
-}
-.ipad.is-flying.go {
-  transform: translate3d(var(--fly-dx), var(--fly-dy), 0) scale(var(--fly-scale));
-  transition: transform .72s cubic-bezier(.7,0,.2,1),
-              border-radius .72s cubic-bezier(.7,0,.2,1);
-  border-radius: 0;
-}
-
-/* Curtain fades the page out behind the flying iPad. */
+/* Curtain fades the page out behind the growing replica, in the player's
+   own background colour so the replica's edges melt into it. */
 .launch-veil {
   position: fixed; inset: 0; z-index: 55;
-  background: oklch(0.19 0.05 300);
+  background: color-mix(in oklab, oklch(0.145 0 0) 86%, oklch(0.55 0.21 300));
   opacity: 0;
   pointer-events: none;
-  /* Eases in behind the panel and deliberately trails it, so the iPad is
-     never hidden behind the curtain it is flying in front of. */
   transition: opacity .55s ease .12s;
 }
 .launch-veil.on { opacity: 1; }
 
-/* Anything that isn't the iPad recedes during the flight. */
+/* The page recedes during the flight. The stage waits until the replica
+   has faded in over the panel. */
 .is-launching .site-header,
 .is-launching .hero,
 .is-launching .site-footer,
 .is-launching .cosmos,
-.is-launching .stars {
+.is-launching .stars,
+.is-launching .stage {
   opacity: 0;
   transition: opacity .45s ease;
   pointer-events: none;
 }
+.is-launching .stage { transition-delay: .2s; }
 .is-launching { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   .stage .ipad.is-lifted { transform: none; }
   .ipad::after { transition: none; }
-  .ipad.is-flying.go { transition: none; }
   .launch-veil { transition: none; }
 }
 
@@ -752,4 +734,214 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 @media (max-width: 560px) {
   .site-header .wrap { justify-content: center; }
   .site-footer .wrap { flex-direction: column; text-align: center; }
+}
+
+/* ---------- Player replica (launch flight) ----------
+   The player's opening frame — piano-only mode, dark theme, default preset —
+   rebuilt from its source (prototype repo: app/prototypes/purple-piano/):
+   Tailwind sizes turned into px, and the chrome colours computed exactly the
+   way the player does, by mixing the dark theme tokens with the royal-purple
+   tint. The flight ends on this, so any drift from the player shows up as a
+   jump at the hand-off: when the player's header or keys change, change
+   this too. */
+.ppx {
+  /* Dark theme tokens (globals.css .dark) and the chrome tint. */
+  --t-background: oklch(0.145 0 0);
+  --t-foreground: oklch(0.985 0 0);
+  --t-card: oklch(0.205 0 0);
+  --t-primary: oklch(0.87 0 0);
+  --t-muted-foreground: oklch(0.708 0 0);
+  --t-accent: oklch(0.30 0.07 275);
+  --t-border: oklch(1 0 0 / 10%);
+  --t-chart-2: oklch(0.623 0.214 259.815);
+  --t-chart-3: oklch(0.546 0.245 262.881);
+  --t-chart-4: oklch(0.488 0.243 264.376);
+  --tint: oklch(0.55 0.21 300);
+  /* CHROME_MIX in purple-piano.tsx. */
+  --background: color-mix(in oklab, var(--t-background) 86%, var(--tint));
+  --foreground: var(--t-foreground);
+  --card: color-mix(in oklab, var(--t-card) 76%, var(--tint));
+  --primary: color-mix(in oklab, var(--t-primary) 60%, var(--tint));
+  --primary-foreground: oklch(0.205 0 0);
+  --muted-foreground: color-mix(in oklab, var(--t-muted-foreground) 84%, var(--tint));
+  --accent: color-mix(in oklab, var(--t-accent) 68%, var(--tint));
+  --border: color-mix(in oklab, var(--t-border) 74%, var(--tint));
+  --chart-2: color-mix(in oklab, var(--t-chart-2) 60%, var(--tint));
+  --chart-3: color-mix(in oklab, var(--t-chart-3) 60%, var(--tint));
+  --chart-4: color-mix(in oklab, var(--t-chart-4) 60%, var(--tint));
+
+  position: fixed; left: 0; top: 0; z-index: 70;
+  width: 100vw; height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: var(--background);
+  color: var(--foreground);
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 16px; line-height: 1.5; font-weight: 400; text-align: left;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  user-select: none; -webkit-user-select: none;
+  transform-origin: 0 0;
+  opacity: 0;
+  will-change: transform, opacity;
+  cursor: default;
+}
+.ppx.is-landed { opacity: 1; will-change: auto; }
+.ppx svg { display: block; flex: none; }
+
+/* StarField: nebula wash + deterministic stars, shown at rest (the player's
+   twinkle only starts after each star's delay). */
+.ppx-sky { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.ppx-nebula {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 90% at 50% -10%, var(--accent) 0%, transparent 62%),
+    radial-gradient(85% 65% at 10% 106%, color-mix(in oklab, var(--chart-4) 58%, transparent) 0%, transparent 70%),
+    radial-gradient(85% 65% at 94% 96%, color-mix(in oklab, var(--chart-3) 48%, transparent) 0%, transparent 70%),
+    radial-gradient(65% 50% at 80% 6%, color-mix(in oklab, var(--chart-2) 38%, transparent) 0%, transparent 70%);
+}
+.ppx-star {
+  position: absolute; border-radius: 9999px; opacity: .45;
+  background: color-mix(in oklab, var(--foreground) 70%, transparent);
+}
+.ppx-sparkle {
+  border-radius: 0; opacity: .8;
+  clip-path: polygon(50% 0%, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0% 50%, 40% 40%);
+}
+
+/* Header strip. */
+.ppx-chrome {
+  position: relative; z-index: 10; flex: none;
+  display: flex; flex-direction: column;
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+.ppx-header {
+  position: relative; z-index: 10;
+  display: flex; flex-wrap: wrap; align-items: flex-start;
+  gap: 8px; padding: 8px 12px 4px;
+}
+.ppx-wordmark {
+  display: flex; align-items: center; height: 52px;
+  white-space: nowrap;
+  font-family: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", system-ui, sans-serif;
+  font-size: 20px; line-height: 1; font-weight: 900;
+  letter-spacing: -0.025em; text-transform: lowercase;
+}
+.ppx-wm-purple, .ppx-wm-piano {
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.ppx-wm-purple { background-image: linear-gradient(90deg, #8b5cf6, #c4b5fd); }
+.ppx-wm-piano { background-image: linear-gradient(90deg, #96a0f8, #f2c14e, #fb8a5c, #4ade80, #2dd4bf, #8b5cf6); }
+
+.ppx-widget-slot { order: 9999; display: flex; justify-content: center; width: 100%; }
+.ppx-widget {
+  width: 100%; max-width: 32rem;
+  border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  border-radius: 28px;
+  background: color-mix(in oklab, var(--card) 50%, transparent);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.ppx-switcher { display: flex; align-items: center; gap: 6px; width: 100%; padding: 6px; }
+.ppx-arrow {
+  display: grid; place-items: center; flex: none;
+  width: 40px; height: 40px; border-radius: 9999px;
+  background: var(--primary); color: var(--primary-foreground);
+}
+.ppx-center {
+  display: flex; align-items: center; gap: 6px;
+  flex: 1 1 0%; min-width: 0; height: 40px;
+  padding: 0 6px; border-radius: 9999px;
+}
+.ppx-chip {
+  display: grid; place-items: center; flex: none;
+  width: 28px; height: 28px; border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  background: color-mix(in oklab, var(--card) 70%, transparent);
+  color: color-mix(in oklab, var(--foreground) 80%, transparent);
+}
+.ppx-label { display: block; flex: 1 1 0%; min-width: 0; text-align: center; }
+.ppx-name-box { position: relative; display: block; overflow: hidden; }
+.ppx-name {
+  display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 16px; line-height: 1.25; font-weight: 900;
+  text-transform: uppercase; letter-spacing: .12em;
+}
+.ppx-dots { position: relative; display: flex; justify-content: center; gap: 4px; margin-top: 2px; }
+.ppx-dots i, .ppx-dots b { width: 6px; height: 6px; border-radius: 9999px; }
+.ppx-dots i { background: color-mix(in oklab, var(--foreground) 25%, transparent); }
+/* The bright dot on the first of six presets: (0 - 2.5) x 10px. */
+.ppx-dots b {
+  position: absolute; top: 0; left: 50%; margin-left: -3px;
+  background: var(--foreground); transform: translateX(-25px);
+}
+.ppx-chev { display: grid; place-items: center; flex: none; width: 28px; height: 28px; color: var(--muted-foreground); }
+
+.ppx-buttons { display: flex; align-items: center; gap: 6px; height: 52px; margin-left: auto; }
+.ppx-btn {
+  display: grid; place-items: center;
+  width: 40px; height: 40px; border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
+  background: color-mix(in oklab, var(--card) 60%, transparent);
+}
+.ppx-i20 { width: 20px; height: 20px; }
+.ppx-i16, .ppx-play, .ppx-vol { width: 16px; height: 16px; }
+.ppx-i14 { width: 14px; height: 14px; }
+.ppx-play { transform: translateX(1px); }
+.ppx-seq { width: 20px; height: 20px; }
+
+/* Keyboard: all fifteen white keys, with the count shown picked from the
+   keybed's width — round(width / 76px) clamped to 7–15, the same container
+   queries the player uses (globals.css .pp-keybed). */
+.ppx-keybed-wrap { position: relative; z-index: 10; flex: 1 1 0%; min-height: 0; width: 100%; padding-top: 4px; }
+.ppx-keybed { position: relative; width: 100%; height: 100%; container-type: inline-size; }
+.ppx-keybed > * { --ppx-whites: 7; }
+.ppx-whites { display: flex; gap: 2px; width: 100%; height: 100%; }
+.ppx-white {
+  position: relative; display: flex; flex: 1 1 0%; min-width: 0;
+  flex-direction: column; align-items: center; justify-content: flex-end;
+  padding-bottom: 8px; border-radius: 0 0 14px 14px;
+}
+.ppx-blacks { position: absolute; inset: 0; }
+.ppx-black {
+  position: absolute; top: 0; display: flex; height: 62%;
+  width: calc(60% / var(--ppx-whites));
+  flex-direction: column; align-items: center; justify-content: flex-end;
+  padding-bottom: 6px; border-radius: 0 0 10px 10px;
+  transform: translateX(-50%);
+}
+.ppx-hint { display: none; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.ppx-white .ppx-hint { margin-bottom: 4px; }
+.ppx-letter { font-size: 14px; line-height: 20px; font-weight: 900; }
+
+/* After the key rules above, so the hidden state wins. */
+.ppx-key-8, .ppx-key-9, .ppx-key-10, .ppx-key-11, .ppx-key-12, .ppx-key-13, .ppx-key-14, .ppx-key-15 { display: none; }
+@container (min-width: 570px) { .ppx-keybed > * { --ppx-whites: 8; } .ppx-key-8 { display: flex; } }
+@container (min-width: 646px) { .ppx-keybed > * { --ppx-whites: 9; } .ppx-key-9 { display: flex; } }
+@container (min-width: 722px) { .ppx-keybed > * { --ppx-whites: 10; } .ppx-key-10 { display: flex; } }
+@container (min-width: 798px) { .ppx-keybed > * { --ppx-whites: 11; } .ppx-key-11 { display: flex; } }
+@container (min-width: 874px) { .ppx-keybed > * { --ppx-whites: 12; } .ppx-key-12 { display: flex; } }
+@container (min-width: 950px) { .ppx-keybed > * { --ppx-whites: 13; } .ppx-key-13 { display: flex; } }
+@container (min-width: 1026px) { .ppx-keybed > * { --ppx-whites: 14; } .ppx-key-14 { display: flex; } }
+@container (min-width: 1102px) { .ppx-keybed > * { --ppx-whites: 15; } .ppx-key-15 { display: flex; } }
+
+/* Tailwind's sm: breakpoint. */
+@media (min-width: 640px) {
+  .ppx-header { gap: 16px; padding: 12px 20px 8px; }
+  .ppx-wordmark { height: 56px; font-size: 24px; }
+  .ppx-widget-slot { order: 0; flex: 1 1 0%; width: auto; }
+  .ppx-switcher { gap: 8px; }
+  .ppx-arrow, .ppx-btn { width: 44px; height: 44px; }
+  .ppx-center { height: 44px; }
+  .ppx-name { font-size: 20px; }
+  .ppx-buttons { height: 56px; }
+  .ppx-play, .ppx-vol { width: 20px; height: 20px; }
+  .ppx-seq { width: 24px; height: 24px; }
+  .ppx-white { padding-bottom: 12px; border-radius: 0 0 18px 18px; }
+  .ppx-black { padding-bottom: 8px; border-radius: 0 0 14px 14px; }
+  .ppx-letter { font-size: 18px; line-height: 28px; }
+}
+/* Key hints only where a physical keyboard is likely (sm:pointer-fine:). */
+@media (min-width: 640px) and (pointer: fine) {
+  .ppx-hint { display: block; }
 }
