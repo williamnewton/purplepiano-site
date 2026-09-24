@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Purple Piano — a cosmic piano for small hands</title>
   <meta name="description" content="A toddler-friendly rainbow piano for iPhone and iPad. No wrong notes, no ads, no internet, no data collected.">
   <meta name="theme-color" content="#140a24">
@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Poppins:wght@800&display=swap">
-  <link rel="stylesheet" href="/style.css?v=32d1bafb">
+  <link rel="stylesheet" href="/style.css?v=585de7dd">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -248,6 +248,46 @@
     </div>
   </footer>
 
+  <!-- The player's opening frame, rebuilt at its real size: header strip
+       over the full-width keyboard, exactly as the app first paints (see
+       the launch script). The flight grows this from the iPad's screen to
+       the viewport, so the hand-off to the player is invisible. Keys and
+       stars are added by the script. Mirrors purple-piano.tsx,
+       synth-widget.tsx, preset-switcher.tsx and piano-keys.tsx in the
+       prototype repo — keep it in step when the player's chrome changes. -->
+  <template id="ppx-template">
+    <div class="ppx" aria-hidden="true">
+      <div class="ppx-sky"><div class="ppx-nebula"></div></div>
+      <div class="ppx-chrome">
+        <div class="ppx-header">
+          <span class="ppx-wordmark"><span class="ppx-wm-purple">purple </span><span class="ppx-wm-piano">piano</span></span>
+          <div class="ppx-widget-slot">
+            <div class="ppx-widget">
+              <div class="ppx-switcher">
+                <span class="ppx-arrow"><svg class="ppx-i20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></span>
+                <span class="ppx-center">
+                  <span class="ppx-chip"><svg class="ppx-i14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/></svg></span>
+                  <span class="ppx-label">
+                    <span class="ppx-name-box"><span class="ppx-name">Bubble Pop</span></span>
+                    <span class="ppx-dots"><i></i><i></i><i></i><i></i><i></i><i></i><b></b></span>
+                  </span>
+                  <span class="ppx-chev"><svg class="ppx-i16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span>
+                </span>
+                <span class="ppx-arrow"><svg class="ppx-i20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></span>
+              </div>
+            </div>
+          </div>
+          <div class="ppx-buttons">
+            <span class="ppx-btn"><svg class="ppx-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg></span>
+            <span class="ppx-btn"><svg class="ppx-vol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/></svg></span>
+            <span class="ppx-btn"><svg class="ppx-seq" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="1.5" y="4" width="4.5" height="4.5" rx="1.25" opacity="0.32"/><rect x="1.5" y="9.75" width="4.5" height="4.5" rx="1.25" opacity="0.32"/><rect x="1.5" y="15.5" width="4.5" height="4.5" rx="1.25" opacity="1"/><rect x="7" y="4" width="4.5" height="4.5" rx="1.25" opacity="0.32"/><rect x="7" y="9.75" width="4.5" height="4.5" rx="1.25" opacity="1"/><rect x="7" y="15.5" width="4.5" height="4.5" rx="1.25" opacity="0.32"/><rect x="12.5" y="4" width="4.5" height="4.5" rx="1.25" opacity="0.32"/><rect x="12.5" y="9.75" width="4.5" height="4.5" rx="1.25" opacity="1"/><rect x="12.5" y="15.5" width="4.5" height="4.5" rx="1.25" opacity="0.32"/><rect x="18" y="4" width="4.5" height="4.5" rx="1.25" opacity="1"/><rect x="18" y="9.75" width="4.5" height="4.5" rx="1.25" opacity="0.32"/><rect x="18" y="15.5" width="4.5" height="4.5" rx="1.25" opacity="0.32"/></svg></span>
+          </div>
+        </div>
+      </div>
+      <div class="ppx-keybed-wrap"><div class="ppx-keybed"><div class="ppx-whites"></div><div class="ppx-blacks"></div></div></div>
+    </div>
+  </template>
+
   <script>
     // Cursor-reactive hero. Pointer-only, motion-safe, and purely decorative:
     // the page is fully correct with this script absent.
@@ -283,15 +323,21 @@
 
   <script>
     // Play-in-browser launch: lift the iPad while either trigger is hovered,
-    // prefetch the player, then fly the iPad to fullscreen on click before
-    // navigating. Both the CTA button and the iPad mockup itself launch it.
-    // Entirely progressive — with this script absent (or JS off) each is a
-    // plain link that navigates immediately.
+    // prefetch the player, then open it on click. Both the CTA button and the
+    // iPad mockup itself launch it. Entirely progressive — with this script
+    // absent (or JS off) each is a plain link that navigates immediately.
+    //
+    // The flight is built so the hand-off can't be seen: a replica of the
+    // player's opening frame (#ppx-template — header strip over the full
+    // keyboard, laid out at the real viewport size) fades in over the iPad's
+    // screen, then grows to fill the window. Its last frame is the player's
+    // first paint, so when the new page takes over nothing moves.
     (function () {
       var btn = document.getElementById('play-web');
       var ipad = document.querySelector('.ipad');
-      var stage = document.querySelector('.stage');
-      if (!btn || !ipad || !stage) return;
+      var screen = ipad && ipad.querySelector('.ipad-screen');
+      var tpl = document.getElementById('ppx-template');
+      if (!btn || !ipad || !screen || !tpl || !('content' in tpl)) return;
 
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
       var url = btn.getAttribute('href');
@@ -307,6 +353,7 @@
         l.href = url;
         l.as = 'document';
         document.head.appendChild(l);
+        replica();
       }
 
       // --- Hover lift ---
@@ -315,74 +362,163 @@
         ipad.classList.toggle('is-lifted', on);
       }
 
+      // --- The player's opening frame ---
+      // Keys and stars are generated from the same formulas the player uses
+      // (piano-keys.tsx, data.ts) rather than copied as markup.
+      var HUES = [350, 20, 45, 70, 95, 135, 165, 190, 225, 265, 295, 320];
+      var NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+      // Computer-key hints by offset from the lowest key (KEY_OFFSETS).
+      var HINTS = 'awsedftgyhujkolp;';
+      var BASE_MIDI = 60, MIN_WHITE = 7, MAX_WHITE = 15;
+
+      function note(midi, l, c, a) {
+        return 'oklch(' + l + ' ' + c + ' ' + HUES[midi % 12] + (a == null ? '' : ' / ' + a) + ')';
+      }
+      function isBlack(midi) { return NAMES[midi % 12].length > 1; }
+      function el(tag, cls, css) {
+        var e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (css) e.style.cssText = css;
+        return e;
+      }
+      function hint(midi, cls, color) {
+        var h = HINTS.charAt(midi - BASE_MIDI);
+        if (!h) return null;
+        var s = el('span', cls, 'color:' + color);
+        s.textContent = h;
+        return s;
+      }
+      // A key only shows once the keybed is wide enough for `count` whites.
+      function countClass(count) { return count > MIN_WHITE ? ' ppx-key-' + count : ''; }
+
+      // Deterministic star field (buildStars in data.ts): one star per cell
+      // of an 8 x 6 grid, jittered within it.
+      function hash(i, salt) {
+        var x = Math.sin(i * 127.1 + salt * 311.7) * 43758.5453;
+        return x - Math.floor(x);
+      }
+      function round2(n) { return Math.round(n * 100) / 100; }
+
+      var app = null;
+      function replica() {
+        if (app) return app;
+        app = tpl.content.firstElementChild.cloneNode(true);
+
+        var sky = app.querySelector('.ppx-sky');
+        for (var i = 0; i < 48; i++) {
+          var x = round2(Math.max(0, Math.min(99, (i % 8 + 0.5 + (hash(i, 1) - 0.5) * 0.7) * 12.5)));
+          var y = round2(Math.max(0, Math.min(99, (Math.floor(i / 8) + 0.5 + (hash(i, 2) - 0.5) * 0.7) * (100 / 6))));
+          var size = round2(1 + hash(i, 3) * 2.6);
+          var sparkle = hash(i, 6) > 0.84;
+          var d = sparkle ? size * 2 : size;
+          sky.appendChild(el('span', sparkle ? 'ppx-star ppx-sparkle' : 'ppx-star',
+            'left:' + x + '%;top:' + y + '%;width:' + d + 'px;height:' + d + 'px'));
+        }
+
+        var whites = [];
+        for (var m = BASE_MIDI; whites.length < MAX_WHITE; m++) if (!isBlack(m)) whites.push(m);
+
+        var wrow = app.querySelector('.ppx-whites');
+        whites.forEach(function (midi, index) {
+          var k = el('span', 'ppx-white' + countClass(index + 1),
+            'background:linear-gradient(180deg,' + note(midi, 0.98, 0.01) + ' 0%,' + note(midi, 0.88, 0.09) + ' 100%);' +
+            'box-shadow:inset 0 -6px 0 ' + note(midi, 0.78, 0.12));
+          var h = hint(midi, 'ppx-hint', note(midi, 0.62, 0.04));
+          if (h) k.appendChild(h);
+          var letter = el('span', 'ppx-letter', 'color:' + note(midi, 0.45, 0.15));
+          letter.textContent = NAMES[midi % 12];
+          k.appendChild(letter);
+          wrow.appendChild(k);
+        });
+
+        var brow = app.querySelector('.ppx-blacks');
+        whites.slice(0, -1).forEach(function (white, index) {
+          var midi = white + 1;
+          if (!isBlack(midi)) return;
+          var k = el('span', 'ppx-black' + countClass(index + 2),
+            'left:calc(' + (index + 1) + ' * 100% / var(--ppx-whites));' +
+            'background:linear-gradient(180deg,' + note(midi, 0.36, 0.1) + ' 0%,' + note(midi, 0.25, 0.08) + ' 100%);' +
+            'box-shadow:inset 0 -5px 0 ' + note(midi, 0.52, 0.17) + ',0 4px 8px oklch(0.15 0.03 275 / 0.6)');
+          var h = hint(midi, 'ppx-hint', note(midi, 0.78, 0.06));
+          if (h) k.appendChild(h);
+          brow.appendChild(k);
+        });
+        return app;
+      }
+
       // --- The flight, shared by every trigger ---
       var launching = false;
+      var themeMeta = document.querySelector('meta[name="theme-color"]');
+      var anims = [];
+
       function launch() {
         if (launching) return;
         launching = true;
         warm();
+        var frame = replica();
 
-        // Fixed positioning is relative to the VIEWPORT, so measure the
-        // iPad's on-screen rect and, if the trigger was used while the
-        // panel sits below the fold, start the flight from a visible origin
-        // instead — otherwise it would fly off the bottom of the screen.
-        var r = ipad.getBoundingClientRect();
-        var vw = window.innerWidth, vh = window.innerHeight;
+        // Freeze the page (this drops the scrollbar, so it goes first: the
+        // measurements below must see the final layout).
+        document.documentElement.classList.add('is-launching');
 
-        // Pin the panel where it currently sits on screen. If it is mostly
-        // below the fold (the button sits above it), lift the start point so
-        // the flight begins from something the reader can actually see.
-        var originTop = r.top;
-        var maxTop = vh - r.height * 0.55;
-        if (originTop > maxTop) originTop = maxTop;
+        // Where the screen sits once the tilt is off — the panel settles
+        // flat while the replica fades in over it.
+        ipad.classList.add('is-measuring');
+        var r = screen.getBoundingClientRect();
+        var radius = parseFloat(getComputedStyle(screen).borderTopLeftRadius) || 0;
+        ipad.classList.remove('is-measuring');
+        void ipad.offsetWidth;
+        ipad.classList.add('is-launched');
 
-        ipad.style.setProperty('--fly-x', r.left + 'px');
-        ipad.style.setProperty('--fly-y', originTop + 'px');
-        ipad.style.setProperty('--fly-w', r.width + 'px');
-        ipad.style.setProperty('--fly-h', r.height + 'px');
-        // .stage sets `perspective`, which makes it a containing block for
-        // fixed-position descendants. Drop it first, or the flying panel
-        // anchors to the stage instead of the viewport.
-        stage.classList.add('is-releasing');
-        ipad.classList.add('is-flying');
+        // A trigger used while the panel sits below the fold (the CTA is
+        // above it on phones) starts from a visible point instead.
+        var vh = window.innerHeight;
+        var top = Math.min(r.top, vh - r.height * 0.55);
 
         var veil = document.createElement('div');
         veil.className = 'launch-veil';
         document.body.appendChild(veil);
+        document.body.appendChild(frame);
 
-        var scale = Math.max(vw / r.width, vh / r.height) * 1.06;
-        var dx = (vw / 2) - (r.left + r.width / 2);
-        var dy = (vh / 2) - (originTop + r.height / 2);
+        // The replica is laid out at the viewport's width from the start, so
+        // its header, key count and breakpoints are final throughout; only
+        // its height stretches (the keys absorb it, as in the player) while
+        // a uniform scale maps it onto the screen. Scale and height move on
+        // one curve, and its end state is the player's first frame.
+        var vw = frame.offsetWidth;
+        var H = frame.offsetHeight;
+        var s0 = r.width / vw;
+        var h0 = r.height / s0;
 
-        // Commit the starting position before applying the transition
-        // target, or the browser collapses both into one style change and
-        // there is nothing to animate. Reading offsetWidth forces that
-        // synchronously — unlike a rAF chain, it cannot be throttled or
-        // skipped in a background tab.
-        void ipad.offsetWidth;
+        anims.push(frame.animate([
+          { transform: 'translate(' + r.left + 'px,' + top + 'px) scale(' + s0 + ')', height: h0 + 'px', borderRadius: radius / s0 + 'px' },
+          { transform: 'translate(0px,0px) scale(1)', height: H + 'px', borderRadius: '0px' }
+        ], { duration: 760, delay: 110, easing: 'cubic-bezier(.7,0,.2,1)', fill: 'both' }));
+        anims.push(frame.animate([{ opacity: 0 }, { opacity: 1 }],
+          { duration: 180, delay: 40, easing: 'ease-out', fill: 'both' }));
 
-        document.documentElement.classList.add('is-launching');
         veil.classList.add('on');
-        ipad.style.setProperty('--fly-dx', dx + 'px');
-        ipad.style.setProperty('--fly-dy', dy + 'px');
-        ipad.style.setProperty('--fly-scale', scale.toFixed(3));
-        ipad.classList.add('go');
+        // Safari tints its toolbars from theme-color; without one it samples
+        // the page, which from here on is the player's own header.
+        if (themeMeta) themeMeta.remove();
 
-        // Navigate when the flight finishes — with a timer as the backstop
-        // so a dropped transitionend can never strand the user here.
+        // Navigate when the flight lands — with a timer as the backstop so a
+        // dropped finish event can never strand the user here. The replica
+        // stays up until the player paints over it.
         var went = false;
         function go() {
           if (went) return;
           went = true;
+          // Swap the animated end state for the same frame as plain styles:
+          // a layer left on the compositor keeps the raster from mid-flight,
+          // a shade softer than the page that replaces it.
+          frame.classList.add('is-landed');
+          anims.forEach(function (a) { a.cancel(); });
+          anims = [];
           window.location.href = url;
         }
-        ipad.addEventListener('transitionend', function (ev) {
-          // transitionend bubbles: the sequencer's key presses end their own
-          // transform transitions during the flight, so only the panel's own
-          // transform may trigger the navigation.
-          if (ev.target === ipad && ev.propertyName === 'transform') go();
-        });
-        setTimeout(go, 900);
+        anims[0].finished.then(go, function () {});
+        setTimeout(go, 2000);
       }
 
       // --- Wire up a trigger ---
@@ -398,11 +534,17 @@
           // behave normally — never trap a deliberate new-tab open.
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
           if (launching) { e.preventDefault(); return; }
-          if (reduce.matches) return; // straight navigation, no flight
+          if (reduce.matches || !frameSupported) return; // straight navigation, no flight
           e.preventDefault();
           launch();
         });
       }
+
+      // The replica needs the Web Animations API and container queries (for
+      // the key count); anywhere without them a plain navigation is better
+      // than a replica that doesn't match.
+      var frameSupported = typeof Element.prototype.animate === 'function' &&
+        !!(window.CSS && CSS.supports && CSS.supports('container-type', 'inline-size'));
 
       arm(btn);
       if (ipad.tagName === 'A') arm(ipad);
@@ -412,9 +554,12 @@
       window.addEventListener('pageshow', function (ev) {
         if (!ev.persisted) return;
         launching = false;
-        ipad.classList.remove('is-flying', 'go', 'is-lifted');
-        stage.classList.remove('is-releasing');
+        anims.forEach(function (a) { a.cancel(); });
+        anims = [];
+        if (app) { app.remove(); app.classList.remove('is-landed'); }
+        ipad.classList.remove('is-launched', 'is-lifted');
         document.documentElement.classList.remove('is-launching');
+        if (themeMeta && !themeMeta.isConnected) document.head.appendChild(themeMeta);
         var v = document.querySelector('.launch-veil');
         if (v) v.remove();
       });
