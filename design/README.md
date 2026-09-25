@@ -32,6 +32,22 @@ the `role="separator"` divider, `data-cell`/`data-midi`, the transport's
 "Play the song" button, the header's `aria-expanded` song-maker button); if a
 player change moves those, update the script too.
 
+## Open Graph image
+
+`../og.jpg` (1200×630) is rendered from the home page itself by
+`gen-og.mjs`: the real wordmark and tagline beside the iPad, with the player
+snapshot frozen mid-song. Re-run it after changing the hero or regenerating
+the player snapshot:
+
+```
+node design/serve.js &   # the site on :4321
+# from the nextjs-prototypes root (playwright-core resolves from there)
+node ../purplepiano-site/design/gen-og.mjs
+```
+
+It is a JPEG because the PNG weighs ~500KB and WhatsApp drops link previews
+over ~300KB. All three pages point `og:image` / `twitter:image` at it.
+
 ## Regenerating the logo
 
 ```
