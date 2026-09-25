@@ -267,11 +267,13 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
      got sliced flat. Wide screens still cap at 1060px. */
   width: min(86%, 1060px);
   margin-inline: auto;
-  border-radius: clamp(14px, 2vw, 26px);
-  /* A thin 2px rim — the metal gradient reads as an edge, not a bezel. */
+  position: relative;
+  border-radius: clamp(10px, 1.1vw, 14px);
+  /* A thin, even 2px rim: a low-contrast gradient, so no stretch of the
+     edge reads brighter or thicker than the rest once the panel tilts. */
   padding: 2px;
-  background: linear-gradient(150deg, #b9bac9 0%, #74758c 30%, #43445a 62%, #9c9db1 100%);
-  box-shadow: 0 50px 90px -30px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.14);
+  background: linear-gradient(160deg, #9896ae 0%, #6c6a85 50%, #85839c 100%);
+  box-shadow: 0 50px 90px -30px rgba(0,0,0,.75);
   transform: rotateX(7deg) rotateY(-13deg) rotateZ(2deg);
   transform-origin: 50% 60%;
   transition: transform .6s cubic-bezier(.22,.61,.36,1);
@@ -296,7 +298,7 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
   aspect-ratio: var(--pp-aspect, 16 / 11);
   /* Tracks the shell's radius minus the 2px rim, so the corners stay
      concentric. */
-  border-radius: clamp(12px, calc(2vw - 2px), 24px);
+  border-radius: clamp(8px, calc(1.1vw - 2px), 12px);
   overflow: hidden;
   isolation: isolate;
   /* The player's background, for the instant before the snapshot sizes. */
@@ -338,11 +340,12 @@ a.btn-ghost:hover { background: rgba(255,255,255,.15); }
 .ipad::after {
   content: "";
   position: absolute;
-  inset: -2%;
+  inset: 0;
   z-index: -1;
   border-radius: inherit;
-  box-shadow: 0 70px 120px -40px rgba(0,0,0,.8),
-              0 0 90px -30px var(--accent);
+  /* Just a deeper shadow under the panel. A coloured halo here read as a
+     flat box sitting behind the tilted device. */
+  box-shadow: 0 60px 110px -40px rgba(0,0,0,.85);
   opacity: 0;
   transition: opacity .45s ease;
   pointer-events: none;
