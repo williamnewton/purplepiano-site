@@ -51,7 +51,14 @@ async function markup() {
 
 const closed = await markup();
 await page.click('button[aria-expanded][aria-label*="song maker"]');
-await page.waitForTimeout(400);
+// The song maker folds open (use-song-maker-fold.ts): wait until the fold
+// has settled — no fold styles left, header play button gone — or the
+// snapshot freezes it mid-fold.
+await page.waitForFunction(() =>
+  !document.querySelector('header button[aria-label="Play the song"]') &&
+  ![...document.querySelectorAll('[data-fold]')].some((el) => el.getAttribute('style')?.includes('max-height')),
+  null, { timeout: 10000 });
+await page.waitForTimeout(300);
 const open = await markup();
 
 // What the transport's play button holds when stopped / playing.
