@@ -34,7 +34,12 @@ await page.waitForFunction(async (TEXT) => {
   ]).catch(() => {});
   // Check against the real text: Google serves each face in unicode-range
   // subsets, and the default check (a space) passes before the letters load.
-  return document.fonts.check('800 78px Poppins', 'purplepiano') &&
+  // check() also passes when a face failed to download, so require a face
+  // of each family that actually loaded.
+  const loaded = (family, weight) => [...document.fonts].some(
+    (f) => f.family.replace(/"/g, '') === family && String(f.weight) === weight && f.status === 'loaded');
+  return loaded('Poppins', '800') && loaded('Baloo 2', '600') &&
+    document.fonts.check('800 78px Poppins', 'purplepiano') &&
     document.fonts.check('600 36px "Baloo 2"', TEXT);
 }, TEXT, { polling: 500, timeout: 20000 });
 
