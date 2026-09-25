@@ -1,21 +1,56 @@
 # Design sources
 
-The site's app mockup and logo are **generated from the real app source**
+The site's app mockup and logo are **generated from the real app**
 (`nextjs-prototypes/app/prototypes/purple-piano`) rather than eyeballed, so the
-marketing site and the app cannot drift apart on colour or geometry.
+marketing site and the app cannot drift apart.
 
-Values lifted verbatim: the 12-stop `PITCH_HUES` oklch wheel, `noteColor()`
-recipes for keys and roll cells, black-key geometry (62% height, 60% width,
-centred on the seams), the 13-dot knob ring over a -140°..140° sweep, the
-royal-purple chrome tint `oklch(0.55 0.21 300)`, and the deterministic
-48-star field hash.
+## The player on the iPad
 
-## Regenerating
+The iPad's screen is a snapshot of the real player — its own markup and its
+own CSS, in a declarative shadow root (`#pp-app` in `../index.html`), laid out
+at the visitor's window size and scaled onto the screen. It is pixel-identical
+to the player (verified at 1440×900, 1024×768, 844×390 and 390×844), plays
+the song by replaying per-step changes recorded from the player itself, and
+the launch flight collapses it into piano-only mode — the player's opening
+frame — before handing over.
+
+`gen-app-snapshot.mjs` captures all of it from a running build of the player.
+Re-run it whenever the player's look changes (header, song maker, transport,
+keys, colours, default preset or tune):
 
 ```
-node gen-site.mjs   # -> _ipad.html, _stars.html
-node apply.mjs      # splice markup into ../index.html
-node apply-css.mjs  # replace the iPad CSS block in ../style.css
+# in nextjs-prototypes
+npm run build && npx next start -p 3100
+# still in nextjs-prototypes (playwright-core resolves from there)
+APP_URL=http://localhost:3100/p/purple-piano node ../purplepiano-site/design/gen-app-snapshot.mjs
+```
+
+It rewrites the block between the `pp-app` markers in `../index.html`. Set
+`CHROMIUM=/path/to/chrome` if Playwright's own browser isn't installed. The
+launch script in `index.html` relies on a few of the player's hooks (`main`,
+the `role="separator"` divider, `data-cell`/`data-midi`, the transport's
+"Play the song" button, the header's `aria-expanded` song-maker button); if a
+player change moves those, update the script too.
+
+## Open Graph image
+
+`../og.jpg` (1200×630) is rendered from the home page itself by
+`gen-og.mjs`: the real wordmark and tagline beside the iPad, with the player
+snapshot frozen mid-song. Re-run it after changing the hero or regenerating
+the player snapshot:
+
+```
+node design/serve.js &   # the site on :4321
+# from the nextjs-prototypes root (playwright-core resolves from there)
+node ../purplepiano-site/design/gen-og.mjs
+```
+
+It is a JPEG because the PNG weighs ~500KB and WhatsApp drops link previews
+over ~300KB. All three pages point `og:image` / `twitter:image` at it.
+
+## Regenerating the logo
+
+```
 node gen-logo.mjs   # -> _favicon.txt, _brand.txt
 node apply-logo.mjs # apply logo + favicon to all pages
 ```
