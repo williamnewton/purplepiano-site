@@ -26,13 +26,17 @@ const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, ign
 await page.goto(SITE, { waitUntil: 'networkidle' });
 // The card is useless in a fallback face: wait for the brand fonts, and fail
 // loudly if they never arrive.
-await page.waitForFunction(async () => {
+const TEXT = 'A cosmic piano for small hands. iPhone · iPad · in your browser';
+await page.waitForFunction(async (TEXT) => {
   await Promise.all([
-    document.fonts.load('800 78px Poppins'),
-    document.fonts.load('600 36px "Baloo 2"'),
+    document.fonts.load('800 78px Poppins', 'purplepiano'),
+    document.fonts.load('600 36px "Baloo 2"', TEXT),
   ]).catch(() => {});
-  return document.fonts.check('800 78px Poppins') && document.fonts.check('600 36px "Baloo 2"');
-}, null, { polling: 500, timeout: 20000 });
+  // Check against the real text: Google serves each face in unicode-range
+  // subsets, and the default check (a space) passes before the letters load.
+  return document.fonts.check('800 78px Poppins', 'purplepiano') &&
+    document.fonts.check('600 36px "Baloo 2"', TEXT);
+}, TEXT, { polling: 500, timeout: 20000 });
 
 // Recompose the hero for a card: type on the left, the iPad on the right,
 // bleeding off the edge. The player keeps a roomy 1440x900 layout rather
